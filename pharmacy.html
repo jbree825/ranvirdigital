@@ -489,6 +489,43 @@ footer a:hover{text-decoration:underline}
 .tilt3d .glare3d{position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:3}
 @media (prefers-reduced-motion: reduce){#hero-canvas-3d{display:none}}
 </style>
+<style id="mobile-fix-22nov">
+/* ===== Mobile fix 22 Nov 2026 (marker: mobile-fix-22nov) ===== */
+html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden;overflow-x:clip;max-width:100%}
+body{overflow-wrap:break-word}
+img,video{max-width:100%;height:auto}
+canvas{max-width:100%}
+table{max-width:100%}
+.hero{overflow:hidden}
+
+@media (max-width:768px){
+  input,select,textarea{font-size:16px}
+  .btn,button,input[type="submit"],input[type="button"]{min-height:44px}
+  .hero h1,h1{font-size:clamp(30px,8.2vw,40px);line-height:1.08}
+}
+
+@media (max-width:480px){
+  .hero h1,h1{font-size:clamp(27px,8.6vw,32px)}
+}
+
+@media (max-width:768px){
+  .wrap{padding-inline:16px}
+  .hero-grid,.band,.visit,.grid,.cols{grid-template-columns:1fr}
+  .hero h1{font-size:clamp(1.9rem,8vw,2.4rem)}
+  .hero h1 .hl{white-space:normal}
+  .hero .lead{font-size:1rem}
+  .hero-ctas .btn{flex:1 1 100%}
+  .trust-row{gap:8px}
+  .chat-panel{right:12px;bottom:80px}
+}
+@media (max-width:480px){
+  .wrap{padding-inline:14px}
+  .stats{grid-template-columns:1fr}
+  .chat-panel{left:12px;right:12px;width:auto}
+  .drawer{width:min(94vw,420px)}
+}
+</style>
 </head>
 <body>
 <div id="progress"></div>

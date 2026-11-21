@@ -330,6 +330,42 @@ dialog button{position:absolute;top:10px;right:10px;width:44px;height:44px;borde
 .tilt3d .glare3d{position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:3}
 @media (prefers-reduced-motion: reduce){#hero-canvas-3d{display:none}}
 </style>
+<style id="mobile-fix-22nov">
+/* ===== Mobile fix 22 Nov 2026 (marker: mobile-fix-22nov) ===== */
+html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden;overflow-x:clip;max-width:100%}
+body{overflow-wrap:break-word}
+img,video{max-width:100%;height:auto}
+canvas{max-width:100%}
+table{max-width:100%}
+.hero{overflow:hidden}
+
+@media (max-width:768px){
+  input,select,textarea{font-size:16px}
+  .btn,button,input[type="submit"],input[type="button"]{min-height:44px}
+  .hero h1,h1{font-size:clamp(30px,8.2vw,40px);line-height:1.08}
+}
+
+@media (max-width:480px){
+  .hero h1,h1{font-size:clamp(27px,8.6vw,32px)}
+}
+
+@media (max-width:768px){
+  h1{font-size:clamp(38px,11vw,52px)}
+  .cards,.proof,.menu-list,.split,.visit-grid,.cute-card{grid-template-columns:1fr}
+  .hero-copy{padding:30px 0 22px}
+  .hero-photo{min-height:280px}
+  .hero-actions .btn{flex:1 1 100%;text-align:center}
+  .menu-item{gap:10px}
+}
+@media (max-width:480px){
+  h1{font-size:clamp(34px,10.5vw,42px)}
+  .gallery{grid-template-columns:1fr}
+  .hero-photo{min-height:240px}
+  .form-row{grid-template-columns:1fr}
+  .stickybar a,.stickybar button{font-size:12.5px}
+}
+</style>
 </head>
 <body>
 <div class="progress" id="progress"></div>

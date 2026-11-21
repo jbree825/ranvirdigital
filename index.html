@@ -554,7 +554,50 @@
         .cf{ transition:none; }
       }
     </style>
-  </head>
+  <style id="mobile-fix-22nov">
+/* ===== Mobile fix 22 Nov 2026 (marker: mobile-fix-22nov) ===== */
+html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden;overflow-x:clip;max-width:100%}
+body{overflow-wrap:break-word}
+img,video{max-width:100%;height:auto}
+canvas{max-width:100%}
+table{max-width:100%}
+.hero{overflow:hidden}
+
+@media (max-width:768px){
+  input,select,textarea{font-size:16px}
+  .btn,button,input[type="submit"],input[type="button"]{min-height:44px}
+  .hero h1,h1{font-size:clamp(30px,8.2vw,40px);line-height:1.08}
+}
+
+@media (max-width:480px){
+  .hero h1,h1{font-size:clamp(27px,8.6vw,32px)}
+}
+
+@media (max-width:768px){
+  .wrap{padding-inline:16px}
+  .hero-grid,.grid,.feat-grid,.price-grid,.steps,.strip,.tpl-layout,.about-box{grid-template-columns:1fr}
+  .hero{padding-top:28px}
+  .hero .lede{font-size:16px}
+  .coverflow-zone{overflow:hidden}
+  .coverflow{overflow:hidden;min-height:260px}
+  .cf{width:min(240px,60vw);margin:0 -54px}
+  .cf img{height:230px}
+  .chat-fab{bottom:calc(54px + env(safe-area-inset-bottom))}
+  .chat-panel{bottom:calc(120px + env(safe-area-inset-bottom))}
+  .marquee{font-size:12px;padding:7px 0}
+}
+@media (max-width:480px){
+  .wrap{padding-inline:14px}
+  .cf{width:min(220px,62vw);margin:0 -58px}
+  .cf img{height:210px}
+  .cf .cf-label{font-size:14px}
+  .chat-panel{left:12px;right:12px;width:auto}
+  .cta-row .btn,.contact-row .btn,.free-strip .btn{width:100%}
+  .pip-roam{width:72px}
+}
+</style>
+</head>
   <body>
     <div class="progress" id="progress" aria-hidden="true"></div>
     <header class="topbar">

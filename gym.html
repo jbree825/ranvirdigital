@@ -354,7 +354,43 @@
 .tilt3d .glare3d{position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:3}
 @media (prefers-reduced-motion: reduce){#hero-canvas-3d{display:none}}
 </style>
-  </head>
+  <style id="mobile-fix-22nov">
+/* ===== Mobile fix 22 Nov 2026 (marker: mobile-fix-22nov) ===== */
+html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:hidden;overflow-x:clip;max-width:100%}
+body{overflow-wrap:break-word}
+img,video{max-width:100%;height:auto}
+canvas{max-width:100%}
+table{max-width:100%}
+.hero{overflow:hidden}
+
+@media (max-width:768px){
+  input,select,textarea{font-size:16px}
+  .btn,button,input[type="submit"],input[type="button"]{min-height:44px}
+  .hero h1,h1{font-size:clamp(30px,8.2vw,40px);line-height:1.08}
+}
+
+@media (max-width:480px){
+  .hero h1,h1{font-size:clamp(27px,8.6vw,32px)}
+}
+
+@media (max-width:768px){
+  .cards,.plans,.reviews,.steps3,.tools,.visit,.split{grid-template-columns:1fr}
+  .hero h1{font-size:clamp(2.4rem,11vw,3.2rem)}
+  .hero-in{padding:2.6rem 0 2.2rem}
+  .hero p.lede{font-size:1.02rem}
+  .hero-stats{gap:1rem}
+  .hero-stats div b{font-size:1.5rem}
+  .hero-ctas .btn{flex:1 1 100%;text-align:center}
+  footer{padding-bottom:6.5rem}
+}
+@media (max-width:480px){
+  .hero h1{font-size:clamp(2.1rem,11.5vw,2.6rem)}
+  .hero-stats{gap:.8rem}
+  .brand{font-size:1.15rem}
+}
+</style>
+</head>
   <body>
     <header class="topbar">
       <div class="wrap topbar-in">
