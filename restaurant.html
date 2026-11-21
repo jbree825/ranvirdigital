@@ -319,6 +319,16 @@ dialog button{position:absolute;top:10px;right:10px;width:44px;height:44px;borde
   .lid{display:none}
   #roam{transition:none !important}
 }
+
+/* ===== 3D upgrade layer (22 Nov) — Three.js hero canvas + tilt cards ===== */
+.hero{position:relative}
+#hero-canvas-3d{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.hero>*{position:relative;z-index:1}
+.hero .hero-bg{position:absolute;z-index:-3}
+.hero .orb,.hero .spice,.hero .petals,.hero .cute-float,.hero .hero-chips{position:absolute}
+.tilt3d{transform-style:preserve-3d;will-change:transform}
+.tilt3d .glare3d{position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:3}
+@media (prefers-reduced-motion: reduce){#hero-canvas-3d{display:none}}
 </style>
 </head>
 <body>
@@ -333,7 +343,8 @@ dialog button{position:absolute;top:10px;right:10px;width:44px;height:44px;borde
 
 <main id="top">
 <!-- HERO -->
-<div class="hero"><div class="wrap hero-grid" style="width:min(1140px,100% - 32px)">
+<div class="hero">
+  <canvas id="hero-canvas-3d" aria-hidden="true"></canvas><div class="wrap hero-grid" style="width:min(1140px,100% - 32px)">
   <span class="spice s1"></span><span class="spice s2"></span><span class="spice s3"></span><span class="spice s4"></span>
   <div class="hero-copy">
     <span class="eyebrow"><span class="live"></span><span class="stars">★★★★★</span> 4.9 · 480+ Google reviews · Loved locally</span>
@@ -767,6 +778,197 @@ dlg.addEventListener('click',function(e){ if(e.target===dlg) dlg.close(); });
     else if(hopEl){ hopEl.classList.remove('hop'); void hopEl.offsetWidth; hopEl.classList.add('hop'); say(TAP_LINES[Math.floor(Math.random()*TAP_LINES.length)]); }
   }
   window.addEventListener('resize',function(){ var c=clamp(x,y); x=c[0]; y=c[1]; place(); flipBubble(); });
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/@studio-freight/lenis@1.1.13/dist/lenis.min.js"></script>
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+
+<script>
+(function(){
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* --- Lenis smooth scroll (guarded) --- */
+  var lenis = null;
+  try {
+    if (!reduced && window.Lenis && window.gsap && window.ScrollTrigger) {
+      lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add(function(t){ lenis.raf(t * 1000); });
+      gsap.ticker.lagSmoothing(0);
+      document.querySelectorAll('a[href^="#"]').forEach(function(a){
+        a.addEventListener("click", function(e){
+          var id = a.getAttribute("href");
+          if (id && id.length > 1 && document.querySelector(id)) {
+            e.preventDefault(); lenis.scrollTo(id, { offset: -70 });
+          }
+        });
+      });
+    }
+  } catch(e) { lenis = null; }
+  /* --- GSAP scroll reveals (guarded; IntersectionObserver fallback exists in pages) --- */
+  try {
+    if (!reduced && window.gsap && window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      var targets = document.querySelectorAll("section, .svc, .card, .dish, .prod, .plan, .gown, .step3, .rev, .review, .testi, .check-card, .stat, .qcard");
+      targets.forEach(function(el){
+        if (el.classList.contains("reveal") || el.classList.contains("rv")) return;
+        gsap.fromTo(el, { y: 34, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 0.85, ease: "power3.out",
+          scrollTrigger: { trigger: el, start: "top 88%", once: true }
+        });
+      });
+      /* hero parallax: canvas drifts slower than content */
+      var cv = document.getElementById("hero-canvas-3d");
+      if (cv) {
+        gsap.to(cv, { yPercent: 12, ease: "none",
+          scrollTrigger: { trigger: cv.parentElement, start: "top top", end: "bottom top", scrub: true } });
+      }
+      window.addEventListener("load", function(){ ScrollTrigger.refresh(); });
+    }
+  } catch(e) {}
+  /* --- CSS 3D tilt cards with cursor glare --- */
+  try {
+    if (!reduced && window.matchMedia("(pointer: fine)").matches) {
+      var cards = document.querySelectorAll(".svc, .card, .dish, .prod, .plan, .gown, .step3, .rev, .review, .testi, .check-card, .stat, .qcard, .gallery figure");
+      cards.forEach(function(card){
+        if (card.hasAttribute("data-tilt")) return;
+        card.classList.add("tilt3d");
+        if (getComputedStyle(card).position === "static") card.style.position = "relative";
+        var glare = document.createElement("span");
+        glare.className = "glare3d"; card.appendChild(glare);
+        var parent = card.parentElement;
+        if (parent) parent.style.perspective = "1100px";
+        var raf = null;
+        card.addEventListener("pointermove", function(e){
+          var r = card.getBoundingClientRect();
+          var nx = (e.clientX - r.left) / r.width - 0.5;
+          var ny = (e.clientY - r.top) / r.height - 0.5;
+          if (raf) cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(function(){
+            card.style.transform = "rotateX(" + (-ny * 13) + "deg) rotateY(" + (nx * 13) + "deg) translateZ(0)";
+            glare.style.background = "radial-gradient(circle at " + ((nx + .5) * 100) + "% " + ((ny + .5) * 100) + "%, rgba(255,255,255,.30), transparent 62%)";
+          });
+        });
+        card.addEventListener("pointerleave", function(){
+          card.style.transform = "rotateX(0deg) rotateY(0deg)";
+          glare.style.background = "none";
+        });
+      });
+    }
+  } catch(e) {}
+})();
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+(function(){
+  var canvas = document.getElementById("hero-canvas-3d");
+  if (!canvas) return;
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hero = canvas.parentElement;
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+  } catch(e) { canvas.style.display = "none"; return; }
+  var isMobile = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 760;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.12;
+  var scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0x2a0e04, 9, 30);
+  var camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+  camera.position.set(0, 1.1, 6.4);
+  var pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  var key = new THREE.DirectionalLight(0xffffff, 2.4); key.position.set(4, 6, 4);
+  var fill = new THREE.DirectionalLight(0xffe9c4, 0.7); fill.position.set(-5, 2, 3);
+  var rim = new THREE.DirectionalLight(0xf59e0b, 1.3); rim.position.set(0, 3, -6);
+  scene.add(key, fill, rim, new THREE.AmbientLight(0xffffff, 0.35));
+  var group = new THREE.Group(); scene.add(group);
+  
+  var gold = new THREE.MeshPhysicalMaterial({ color: 0xd4af37, metalness: 1, roughness: 0.2, clearcoat: 0.7, envMapIntensity: 1.3 });
+  var plate = new THREE.Mesh(new THREE.CylinderGeometry(1.55, 1.25, 0.14, 48),
+    new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0.05, roughness: 0.15, clearcoat: 1, envMapIntensity: 1.1 }));
+  plate.position.y = -0.75; group.add(plate);
+  var dome = new THREE.Mesh(new THREE.SphereGeometry(1.2, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2), gold);
+  dome.position.y = -0.68; group.add(dome);
+  var rimT = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.05, 14, 60), gold);
+  rimT.rotation.x = Math.PI / 2; rimT.position.y = -0.68; group.add(rimT);
+  var knob = new THREE.Mesh(new THREE.SphereGeometry(0.17, 24, 18), gold);
+  knob.position.y = 0.55; group.add(knob);
+  var chili = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.13, 12, 24, Math.PI * 1.2),
+    new THREE.MeshPhysicalMaterial({ color: 0xdc2626, roughness: 0.3, clearcoat: 0.9, envMapIntensity: 1.1 }));
+  chili.position.set(1.35, -0.5, 0.5); chili.rotation.set(0.6, 0.4, 1.2); group.add(chili);
+
+  /* sparkle particles (1 draw call) */
+  var pCount = isMobile ? 90 : 180;
+  var pos = new Float32Array(pCount * 3);
+  for (var i = 0; i < pCount; i++) {
+    pos[i*3] = (Math.random() - 0.5) * 10;
+    pos[i*3+1] = (Math.random() - 0.5) * 6;
+    pos[i*3+2] = (Math.random() - 0.5) * 4 - 1;
+  }
+  var pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  var points = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xf59e0b, size: 0.06, transparent: true, opacity: 0.75 }));
+  scene.add(points);
+  /* state object scrubbed by GSAP */
+  var S = { camZ: 6.4, rotY: 0, lift: 0 };
+  try {
+    if (!reduced && window.gsap && window.ScrollTrigger) {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.timeline({ scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: 1 } })
+        .to(S, { camZ: 5.2, rotY: Math.PI * 1.5, lift: 0.5, ease: "none" });
+    }
+  } catch(e) {}
+  var tx = 0, ty = 0, mx = 0, my = 0;
+  window.addEventListener("pointermove", function(e){
+    tx = (e.clientX / window.innerWidth - 0.5) * 2;
+    ty = (e.clientY / window.innerHeight - 0.5) * 2;
+  }, { passive: true });
+  function layout(){
+    var w = hero.clientWidth, h = hero.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+    var portrait = camera.aspect < 0.9;
+    group.position.x = portrait ? 0 : 2.1;
+    group.position.y = portrait ? 0.9 : 0.1;
+    S.camZ = portrait ? 7.8 : 6.4;
+    camera.position.z = S.camZ;
+  }
+  layout();
+  window.addEventListener("resize", layout);
+  var clock = new THREE.Clock();
+  var running = true, visible = true;
+  function frame(){
+    var t = clock.getElapsedTime();
+    group.rotation.y = S.rotY + t * 0.22;
+    group.rotation.x = Math.sin(t * 0.4) * 0.08;
+    group.position.y += (( (camera.aspect < 0.9 ? 0.9 : 0.1) + Math.sin(t * 0.8) * 0.12 + S.lift ) - group.position.y) * 0.08;
+    points.rotation.y = t * 0.03;
+    mx += (tx - mx) * 0.05; my += (ty - my) * 0.05;
+    camera.position.x = mx * 0.55;
+    camera.position.y = 1.1 - my * 0.35;
+    camera.position.z += (S.camZ - camera.position.z) * 0.06;
+    camera.lookAt(group.position.x * 0.6, 0.2, 0);
+    renderer.render(scene, camera);
+  }
+  if (reduced) { frame(); return; }
+  renderer.setAnimationLoop(function(){ if (visible && running) frame(); });
+  try {
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){ visible = e.isIntersecting; });
+    }, { rootMargin: "200px" }).observe(hero);
+  } catch(e) {}
+  document.addEventListener("visibilitychange", function(){ running = !document.hidden; });
 })();
 </script>
 </body>
