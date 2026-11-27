@@ -1,0 +1,45 @@
+/* Ranvir Digital voice agent widget (Eva). Scoped with va- prefix. */
+.va-fab{position:fixed;right:16px;bottom:calc(132px + env(safe-area-inset-bottom));z-index:61;display:inline-flex;align-items:center;gap:9px;min-height:56px;padding:10px 18px;border-radius:999px;border:0;background:var(--amber,#e8871e);color:#fff;font:inherit;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 14px 32px rgba(232,135,30,.45)}
+.va-fab svg{width:22px;height:22px;flex:none}
+.va-fab .va-dot{width:9px;height:9px;border-radius:50%;background:#fff;flex:none;animation:vaPulse 2s infinite}
+@keyframes vaPulse{0%,100%{opacity:1}50%{opacity:.4}}
+.va-panel{position:fixed;right:16px;bottom:calc(200px + env(safe-area-inset-bottom));z-index:61;width:min(380px,calc(100vw - 24px));max-height:min(600px,calc(100svh - 230px));background:var(--surface,#fff);border:1px solid var(--line,#ddd8cc);border-radius:22px;overflow:hidden;display:none;flex-direction:column;box-shadow:0 28px 60px rgba(27,36,48,.3);font-family:var(--body,system-ui,sans-serif);color:var(--ink,#1b2430)}
+.va-panel.open{display:flex}
+.va-head{background:var(--teald,#084c3f);color:#eafaf4;padding:13px 16px;display:flex;gap:10px;align-items:center}
+.va-head .va-av{width:38px;height:38px;border-radius:50%;background:var(--amber,#e8871e);display:grid;place-items:center;flex:none}
+.va-head .va-av svg{width:20px;height:20px}
+.va-head strong{display:block;font-size:15.5px;line-height:1.2}
+.va-head span{font-size:12.5px;opacity:.85}
+.va-lang{margin-left:auto;display:flex;background:rgba(255,255,255,.14);border-radius:999px;padding:3px;flex:none}
+.va-lang button{border:0;background:transparent;color:#eafaf4;font:inherit;font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:999px;cursor:pointer;min-height:32px}
+.va-lang button[aria-pressed="true"]{background:#fff;color:var(--teald,#084c3f)}
+.va-close{background:transparent;border:0;color:inherit;font-size:24px;cursor:pointer;line-height:1;width:40px;height:40px;flex:none}
+.va-status{padding:10px 16px 0;font-size:13.5px;font-weight:700;color:var(--teald,#084c3f);min-height:30px}
+.va-log{padding:8px 14px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;flex:1;background:var(--bg,#f7f5f0);min-height:120px}
+.va-log .va-msg{padding:10px 13px;border-radius:16px;font-size:14.5px;line-height:1.55;max-width:88%}
+.va-log .va-msg.bot{background:var(--surface,#fff);border:1px solid var(--line,#ddd8cc);align-self:flex-start}
+.va-log .va-msg.user{background:var(--teal,#0c6b58);color:#fff;align-self:flex-end}
+.va-log .va-msg.live{opacity:.65;font-style:italic}
+.va-mic-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 12px 4px;background:var(--bg,#f7f5f0)}
+.va-mic{width:74px;height:74px;border-radius:50%;border:0;background:var(--amber,#e8871e);color:#fff;cursor:pointer;display:grid;place-items:center;box-shadow:0 14px 30px rgba(232,135,30,.45);position:relative}
+.va-mic svg{width:32px;height:32px}
+.va-mic:disabled{opacity:.45;cursor:not-allowed}
+.va-mic.listening{background:#c0392b}
+.va-mic.listening::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:3px solid rgba(192,57,43,.5);animation:vaRing 1.2s ease-out infinite}
+@keyframes vaRing{0%{transform:scale(.85);opacity:1}100%{transform:scale(1.25);opacity:0}}
+.va-mic-hint{font-size:12.5px;color:var(--muted,#4a5568);text-align:center}
+.va-stop{border:1px solid var(--line,#ddd8cc);background:var(--surface,#fff);color:var(--ink,#1b2430);border-radius:999px;padding:8px 16px;font:inherit;font-size:13px;font-weight:800;cursor:pointer;min-height:38px;display:none}
+.va-stop.show{display:inline-block}
+.va-quick{display:flex;flex-wrap:wrap;gap:7px;padding:10px 12px 2px;background:var(--bg,#f7f5f0)}
+.va-quick button{border:1px solid var(--line,#ddd8cc);background:var(--surface,#fff);color:var(--ink,#1b2430);border-radius:999px;padding:8px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;min-height:38px}
+.va-form{display:flex;gap:8px;padding:10px 12px 8px;background:var(--bg,#f7f5f0)}
+.va-form input{flex:1;font:inherit;font-size:16px;padding:11px 12px;border-radius:12px;border:1.5px solid var(--line,#ddd8cc);background:var(--surface,#fff);color:var(--ink,#1b2430);min-height:48px;min-width:0}
+.va-form button{font:inherit;font-weight:800;font-size:14.5px;background:var(--teal,#0c6b58);color:#fff;border:0;border-radius:12px;padding:0 18px;cursor:pointer;min-height:48px}
+.va-note{font-size:12px;color:var(--muted,#4a5568);text-align:center;padding:2px 12px 10px;background:var(--bg,#f7f5f0)}
+@media(max-width:768px){
+ .va-fab{bottom:calc(126px + env(safe-area-inset-bottom))}
+ .va-panel{right:12px;left:12px;width:auto;bottom:calc(192px + env(safe-area-inset-bottom));max-height:min(560px,calc(100svh - 220px))}
+}
+@media(prefers-reduced-motion:reduce){
+ .va-fab .va-dot,.va-mic.listening::after{animation:none!important}
+}
